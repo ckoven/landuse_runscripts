@@ -68,7 +68,7 @@ cd ${CASE_NAME}
 
 
 cat > user_nl_clm <<EOF
-fates_paramfile = '/glade/u/home/rfisher/global_pft_scripts/parameter_mods/parameter_files/6PFTs_distfrac0.5.nc'
+fates_paramfile = '/glade/u/home/charlie/landuse_runscripts/mod_from_rosiefiles_6PFTs_distfrac0.5.nc'
 hist_fincl1 = 'NPLANT_SCPF','M1_SCPF','M2_SCPF','M3_SCPF','M4_SCPF','M5_SCPF','M6_SCPF','M7_SCPF','M8_SCPF','PFTcrownarea','CROWNFIREMORT_SCPF','CAMBIALFIREMORT_SCPF','SCORCH_HEIGHT','BIOMASS_BY_AGE','NPLANT_CANOPY_SCPF','MORTALITY_CANOPY_SCPF','SECONDARY_FOREST_FRACTION','WOOD_PRODUCT','SECONDARY_FOREST_BIOMASS','SECONDARY_AREA_AGE_ANTHRO_DIST','SECONDARY_AREA_PATCH_AGE_DIST'
 use_fates_spitfire = .true.
 finidat='/glade/scratch/rfisher/archive/FBG_COMP_287ppm/rest/0180-01-01-00000/FBG_COMP_287ppm.clm2.r.0180-01-01-00000.nc'

@@ -245,9 +245,9 @@ variables:
 	double fates_hydr_srl(fates_pft) ;
 		fates_hydr_srl:units = "m g-1" ;
 		fates_hydr_srl:long_name = "specific root length" ;
-	double fates_leaf_BB_slope(fates_pft) ;
-		fates_leaf_BB_slope:units = "unitless" ;
-		fates_leaf_BB_slope:long_name = "stomatal slope parameter, as per Ball-Berry" ;
+	double fates_leaf_stomatal_slope_ballberry(fates_pft) ;
+		fates_leaf_stomatal_slope_ballberry:units = "unitless" ;
+		fates_leaf_stomatal_slope_ballberry:long_name = "stomatal slope parameter, as per Ball-Berry" ;
 	double fates_leaf_c3psn(fates_pft) ;
 		fates_leaf_c3psn:units = "flag" ;
 		fates_leaf_c3psn:long_name = "Photosynthetic pathway (1=c3, 0=c4)" ;
@@ -413,12 +413,12 @@ variables:
 	double fates_root_long(fates_pft) ;
 		fates_root_long:units = "yr" ;
 		fates_root_long:long_name = "root longevity (alternatively, turnover time)" ;
-	double fates_roota_par(fates_pft) ;
-		fates_roota_par:units = "1/m" ;
-		fates_roota_par:long_name = "CLM rooting distribution parameter" ;
-	double fates_rootb_par(fates_pft) ;
-		fates_rootb_par:units = "1/m" ;
-		fates_rootb_par:long_name = "CLM rooting distribution parameter" ;
+	double fates_fnrt_prof_a(fates_pft) ;
+		fates_fnrt_prof_a:units = "1/m" ;
+		fates_fnrt_prof_a:long_name = "CLM rooting distribution parameter" ;
+	double fates_fnrt_prof_b(fates_pft) ;
+		fates_fnrt_prof_b:units = "1/m" ;
+		fates_fnrt_prof_b:long_name = "CLM rooting distribution parameter" ;
 	double fates_seed_alloc(fates_pft) ;
 		fates_seed_alloc:units = "fraction" ;
 		fates_seed_alloc:long_name = "fraction of available carbon balance allocated to seeds" ;
@@ -506,9 +506,6 @@ variables:
 	double fates_CWD_frac(fates_NCWD) ;
 		fates_CWD_frac:units = "fraction" ;
 		fates_CWD_frac:long_name = "fraction of woody (bdead+bsw) biomass destined for CWD pool" ;
-	double fates_rootprof_beta(fates_variants, fates_pft) ;
-		fates_rootprof_beta:units = "unitless" ;
-		fates_rootprof_beta:long_name = "Rooting beta parameter, for C and N vertical discretization (NOT USED BY DEFAULT)" ;
 	double fates_leaf_long(fates_leafage_class, fates_pft) ;
 		fates_leaf_long:units = "yr" ;
 		fates_leaf_long:long_name = "Leaf longevity (ie turnover timescale)" ;
@@ -524,12 +521,6 @@ variables:
 	double fates_base_mr_20 ;
 		fates_base_mr_20:units = "gC/gN/s" ;
 		fates_base_mr_20:long_name = "Base maintenance respiration rate for plant tissues, using Ryan 1991" ;
-	double fates_bbopt_c3 ;
-		fates_bbopt_c3:units = "umol H2O/m**2/s" ;
-		fates_bbopt_c3:long_name = "Ball-Berry minimum unstressed leaf conductance for C3" ;
-	double fates_bbopt_c4 ;
-		fates_bbopt_c4:units = "umol H2O/m**2/s" ;
-		fates_bbopt_c4:long_name = "Ball-Berry minimum unstressed leaf conductance for C4" ;
 	double fates_canopy_closure_thresh ;
 		fates_canopy_closure_thresh:units = "unitless" ;
 		fates_canopy_closure_thresh:long_name = "tree canopy coverage at which crown area allometry changes from savanna to forest value" ;
@@ -671,6 +662,26 @@ variables:
 	double fates_soil_salinity ;
 		fates_soil_salinity:units = "ppt" ;
 		fates_soil_salinity:long_name = "soil salinity used for model when not coupled to dynamic soil salinity" ;
+	double fates_leaf_stomatal_intercept(fates_pft) ;
+ 	       fates_leaf_stomatal_intercept:units = "umol H2O/m**2/s" ;
+ 	       fates_leaf_stomatal_intercept:long_name = "Minimum unstressed stomatal conductance for Ball-Berry model and Medlyn model" ;
+        double fates_leaf_stomatal_slope_medlyn(fates_pft) ;
+               fates_leaf_stomatal_slope_medlyn:units = "KPa**0.5" ;
+               fates_leaf_stomatal_slope_medlyn:long_name = "stomatal slope parameter, as per Medlyn" ;
+        double fates_fnrt_prof_mode(fates_pft) ;
+               fates_fnrt_prof_mode:units = "index" ;
+               fates_fnrt_prof_mode:long_name = "Index to select fine root profile function: 1) Jackson Beta, 2) 1-param exponential 3) 2-param exponential" ;
+	double fates_fire_threshold ;
+	       fates_fire_threshold:units = "kW/m" ;
+	       fates_fire_threshold:long_name = "spitfire parameter, fire intensity threshold for tracking fires that spread" ;
+	double fates_leaf_stomatal_model ;
+	       fates_leaf_stomatal_model:units = "unitless" ;
+	       fates_leaf_stomatal_model:long_name = "switch for choosing between Ball-Berry (1) stomatal conductance model and Medlyn (2) model" ;
+	double fates_logging_dbhmax ;
+	       fates_logging_dbhmax:units = "cm" ;
+	       fates_logging_dbhmax:long_name = "Maximum dbh below which logging is applied (unset values flag this to be unused)" ;
+
+
 
 // global attributes:
 		:history = "This file was made from FatesPFTIndexSwapper.py \n",
@@ -895,7 +906,11 @@ data:
 
  fates_hydr_srl = 25, 25, 25, 25, 25, 25 ;
 
- fates_leaf_BB_slope = 8, 8, 8, 8, 8, 8 ;
+ fates_leaf_stomatal_intercept = 10000, 10000, 10000, 10000, 10000, 40000 ;
+
+ fates_leaf_stomatal_slope_ballberry = 8, 8, 8, 8, 8, 8 ;
+
+ fates_leaf_stomatal_slope_medlyn = 4.1, 2.3, 2.3, 4.1, 4.4, 4.4 ;
 
  fates_leaf_c3psn = 1, 1, 1, 1, 1, 0 ;
 
@@ -1010,9 +1025,11 @@ data:
 
  fates_root_long = 1, 1, 1, 1, 1, 1 ;
 
- fates_roota_par = 7, 7, 6, 6, 11, 11 ;
+ fates_fnrt_prof_a = 7, 7, 6, 6, 11, 11 ;
 
- fates_rootb_par = 1, 2, 2, 2, 2, 2 ;
+ fates_fnrt_prof_b = 1, 2, 2, 2, 2, 2 ;
+
+ fates_fnrt_prof_mode = 3, 3, 3, 3, 3, 3 ;
 
  fates_seed_alloc = 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 ;
 
@@ -1108,10 +1125,6 @@ data:
 
  fates_CWD_frac = 0.045, 0.075, 0.21, 0.67 ;
 
- fates_rootprof_beta =
-  0.976, 0.976, 0.976, 0.976, 0.976, 0.976,
-  _, _, _, _, _, _ ;
-
  fates_leaf_long =
   1.5, 2.5, 1, 1, 0.3, 0.3 ;
 
@@ -1137,10 +1150,6 @@ data:
  fates_history_coageclass_bin_edges = _ ;
 
  fates_base_mr_20 = 2.52e-06 ;
-
- fates_bbopt_c3 = 10000 ;
-
- fates_bbopt_c4 = 40000 ;
 
  fates_canopy_closure_thresh = 0.8 ;
 
@@ -1179,6 +1188,12 @@ data:
  fates_fire_nignitions = 15 ;
 
  fates_fire_part_dens = 513 ;
+
+ fates_fire_threshold = 50 ;
+
+ fates_leaf_stomatal_model = 1 ;
+
+ fates_logging_dbhmax = _ ;
 
  fates_hydr_kmax_rsurf1 = 20 ;
 
