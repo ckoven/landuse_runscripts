@@ -6,7 +6,7 @@ GITHASH1=`git log -n 1 --format=%h`
 cd src/fates
 GITHASH2=`git log -n 1 --format=%h`
 
-SETUP_CASE=fates_clm50_global_4x5_historicaltransient
+SETUP_CASE=fates_clm50_global_4x5_historicaltransient_nofire
 CASE_NAME=${SETUP_CASE}_${GITHASH1}_${GITHASH2}
 basedir=$SRCDIR/cime/scripts
 
@@ -22,9 +22,10 @@ cd $basedir
 
 cd ${CASE_NAME}
 
-# ./xmlchange STOP_OPTION=nyears
-# ./xmlchange STOP_N=3
-# ./xmlchange REST_N=1
+ ./xmlchange STOP_OPTION=nyears
+ ./xmlchange STOP_N=10
+
+# ./xmlchange REST_N=10
 # ./xmlchange REST_OPTION=nyears
 # #./xmlchange CONTINUE_RUN=FALSE
 # ./xmlchange RESUBMIT=0
@@ -45,13 +46,19 @@ cd ${CASE_NAME}
 
 # ./xmlchange DIN_LOC_ROOT_CLMFORC=/glade/p/cgd/tss/CTSM_datm_forcing_data
 
-# ./xmlchange NTASKS_LND=144
+./xmlchange NTASKS_LND=288
+./xmlchange NTASKS_CPL=288
+./xmlchange NTASKS_ROF=288
+./xmlchange NTASKS_ICE=288
+./xmlchange NTASKS_OCN=288
+./xmlchange NTASKS_GLC=288
+./xmlchange NTASKS_WAV=288
 
 # ./xmlchange EXEROOT=/glade/scratch/charlie/$CASE_NAME/bld
 # ./xmlchange RUNDIR=/glade/scratch/charlie/$CASE_NAME/run
 # ./xmlchange DOUT_S_ROOT=/glade/scratch/charlie/archive/$CASE_NAME
 
-# ./xmlchange JOB_WALLCLOCK_TIME=5:59:00
+ ./xmlchange JOB_WALLCLOCK_TIME=5:59:00
 
 # ### use the following for hybrid runs, e.g. if needed to turn fire on after its been off
 # export YEAR_REST=0031
@@ -69,13 +76,13 @@ cd ${CASE_NAME}
 
 cat > user_nl_clm <<EOF
 fates_paramfile = '/glade/u/home/charlie/landuse_runscripts/mod_from_rosiefiles_6PFTs_distfrac0.5.nc'
-hist_fincl1 = 'NPLANT_SCPF','M1_SCPF','M2_SCPF','M3_SCPF','M4_SCPF','M5_SCPF','M6_SCPF','M7_SCPF','M8_SCPF','PFTcrownarea','CROWNFIREMORT_SCPF','CAMBIALFIREMORT_SCPF','SCORCH_HEIGHT','BIOMASS_BY_AGE','NPLANT_CANOPY_SCPF','MORTALITY_CANOPY_SCPF','SECONDARY_FOREST_FRACTION','WOOD_PRODUCT','SECONDARY_FOREST_BIOMASS','SECONDARY_AREA_AGE_ANTHRO_DIST','SECONDARY_AREA_PATCH_AGE_DIST'
-use_fates_spitfire = .true.
+hist_fincl1 = 'NPLANT_SCPF','M1_SCPF','M2_SCPF','M3_SCPF','M4_SCPF','M5_SCPF','M6_SCPF','M7_SCPF','M8_SCPF','PFTcrownarea','CROWNFIREMORT_SCPF','CAMBIALFIREMORT_SCPF','SCORCH_HEIGHT','BIOMASS_BY_AGE','NPLANT_CANOPY_SCPF','MORTALITY_CANOPY_SCPF','SECONDARY_FOREST_FRACTION','WOOD_PRODUCT','SECONDARY_FOREST_BIOMASS','SECONDARY_AREA_AGE_ANTHRO_DIST','SECONDARY_AREA_PATCH_AGE_DIST','PFTcanopycrownarea'
+use_fates_spitfire = .false.
 finidat='/glade/scratch/rfisher/archive/FBG_COMP_287ppm/rest/0180-01-01-00000/FBG_COMP_287ppm.clm2.r.0180-01-01-00000.nc'
 use_fates_logging = .true.
 use_fates_fixed_biogeog = .true.
 fsurdat = '/glade/p/cesmdata/cseg/inputdata/lnd/clm2/surfdata_map/release-clm5.0.18/surfdata_4x5_hist_16pfts_Irrig_CMIP6_simyr1850_c190214.nc'
-flanduse_timeseries = '/glade/p/cesmdata/cseg/inputdata/lnd/clm2/surfdata_map/release-clm5.0.18/landuse.timeseries_4x5_hist_16pfts_Irrig_CMIP6_simyr1850-2015_c190214.nc'
+flanduse_timeseries = '/glade/u/home/charlie/scratch/landuse.timeseries_4x5_hist_16pfts_Irrig_CMIP6_simyr1850-2015_c190214_cdkmod_areaharvest_c200622.nc'
 EOF
 
 ./case.setup
